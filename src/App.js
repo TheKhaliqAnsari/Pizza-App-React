@@ -66,28 +66,45 @@ const Header = () => {
 };
 
 const Menu = () => {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2> Our Menu</h2>
-      <ul className="pizzas">
-        {pizzaData.map((pizzaObject, idx) => {
-          return (
-            <Pizza
-              name={pizzaObject.name}
-              ingredients={pizzaObject.ingredients}
-              price={pizzaObject.price}
-              photoName={pizzaObject.photoName}
-              soldOut={pizzaObject.soldOut}
-            />
-          );
-        })}
-      </ul>
+
+      
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+        Authentic Italian cuisine. 6 creative dishes to choose from. All from
+        our stone oven, all organic, all delicious
+      </p>
+        <ul className="pizzas">
+          {pizzaData.map((pizzaObject, idx) => {
+            return (
+              <Pizza
+                key={idx}
+                name={pizzaObject.name}
+                ingredients={pizzaObject.ingredients}
+                price={pizzaObject.price}
+                photoName={pizzaObject.photoName}
+                soldOut={pizzaObject.soldOut}
+              />
+            );
+          })}
+        </ul>
+        </>
+      ) : (
+        <p>We are still working on our menu. Please come back later :)</p>
+      )}
     </main>
   );
 };
 const Footer = () => {
   const hour = new Date().getHours();
-  console.log(hour);
+
   const [openHour, closeHour] = [12, 22];
   const isOpen = hour >= openHour && hour <= closeHour;
   console.log(isOpen);
@@ -96,19 +113,39 @@ const Footer = () => {
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()} We're currently open!
+      {isOpen ? (
+        <Order openHour={openHour} closeHour={closeHour} />
+      ) : (
+        <p>
+          We are happy to welcome you between {openHour}:00 - {closeHour}:00
+        </p>
+      )}
     </footer>
   );
 };
 
-const Pizza = ({ name, ingredients, price, photoName, soldOut }) => {
+const Order = ({ openHour, closeHour }) => {
   return (
-    <li className="pizza">
+    <div className="order">
+      <p>
+        We are open from {openHour}:00 to {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
+};
+
+const Pizza = ({ name, ingredients, price, photoName, soldOut }) => {
+  // if (soldOut) return null;
+
+  return (
+    <li className={soldOut ? "pizza sold-out" : "pizza"}>
       <img src={photoName} alt={name} />
       <div>
         <h3>{name}</h3>
         <p>{ingredients}</p>
-        <span>{price}</span>
+        <span>{soldOut ? "Sold Out" : price}</span>
       </div>
     </li>
   );
